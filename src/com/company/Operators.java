@@ -8,7 +8,7 @@ import java.util.List;
 public class Operators  implements SuccessorFunction {
 
     /**parametre state ha de ser de tipus Object*/
-    public List getSuccessors (State state) {
+    public List getSuccessors (Object state) {
         ArrayList<State> retval = new ArrayList<>();
 
         /**Possibles successors fent swaps de grups*/
@@ -86,8 +86,13 @@ public class Operators  implements SuccessorFunction {
         if (rescatsVol1 <= 15 && rescatsVol2 <= 15) {
             ret = (State) s;
             Grupo temp = (Grupo) ret.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+
             ret.managedCentres.get(centre1).get(vol1).toRescue.set(pos1, ret.managedCentres.get(centre2).get(vol2).toRescue.get(pos2));
             ret.managedCentres.get(centre2).get(vol2).toRescue.set(pos2, temp);
+
+            /**actualitzem valors de capacitat*/
+            ret.managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
+            ret.managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
         }
         return ret;
     }
@@ -106,18 +111,18 @@ public class Operators  implements SuccessorFunction {
             /**s'ha de mantenir la restricció d'un màxim de 15 persones per helicòpter*/
             if (rescatsVol + s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
                 ret = (State) s;
-                Grupo centre_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
-                for (int i = 1; i < pos1; i++)
-                    s.managedCentres.get(centre1).get(vol1).toRescue.set(i - 1, s.managedCentres.get(centre1).get(vol1).toRescue.get(i));
-                for (int i = pos1; i < s.managedCentres.get(centre1).get(vol1).toRescue.size()-1; i++)
-                    s.managedCentres.get(centre1).get(vol1).toRescue.set(i, s.managedCentres.get(centre1).get(vol1).toRescue.get(i + 1));
-                s.managedCentres.get(centre1).get(vol1).toRescue.remove(s.managedCentres.get(centre1).get(vol1).toRescue.size()-1);
+                Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+
+                s.managedCentres.get(centre1).get(vol1).remove(pos1);
+                s.managedCentres.get(centre1).get(vol1).add(pos2, grup_mogut);
+
+                /**actualitzem valors de capacitat*/
+                s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
+                s.managedCentres.get(centre2).get(vol2).capacity += grup_mogut.getNPersonas();
+
                 /**eliminem el vol en cas de que quedi vuit*/
                 if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
                     s.managedCentres.get(centre1).remove(s.managedCentres.get(centre1).get(vol1));
-
-                /**arregelm el vol al qual movem el grup*/
-                s.managedCentres.get(centre2).get(vol2).toRescue.add(pos2, centre_mogut);
             }
         }
         return ret;
@@ -129,29 +134,20 @@ public class Operators  implements SuccessorFunction {
      */
     public State move_nou (State s, int centre1, int vol1, int pos1, int centre2) {
         State ret = (State) s;
-        Grupo centre_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+        Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
-        for (int i = 1; i < pos1; i++)
-            s.managedCentres.get(centre1).get(vol1).toRescue.set(i - 1, s.managedCentres.get(centre1).get(vol1).toRescue.get(i));
-        for (int i = pos1; i < s.managedCentres.get(centre1).get(vol1).toRescue.size()-1; i++)
-            s.managedCentres.get(centre1).get(vol1).toRescue.set(i, s.managedCentres.get(centre1).get(vol1).toRescue.get(i + 1));
-        s.managedCentres.get(centre1).get(vol1).toRescue.remove(s.managedCentres.get(centre1).get(vol1).toRescue.size()-1);
+        s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
+        s.managedCentres.get(centre1).get(vol1).remove(pos1);
 
         /**eliminem el vol en cas de que quedi vuit*/
         if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
-            s.managedCentres.get(centre1).remove(s.managedCentres.get(centre1).get(vol1));
+            s.managedCentres.get(centre1).remove(vol1);
 
-        /**crear un nou vol (path) i afegir-lo a la llista del centre corresponent
-         *
-         *
-         *
-         *
-         * State.Path e = null;
-         * s.managedCentres.get(centre2).add(e);
-         *
-         *
-         *
-         * */
+        /**Creem nou Path i l'afegim al centre2*/
+        State.Path nou = new State.Path();
+        nou.toRescue = new ArrayList<Grupo>();
+        nou.toRescue.add(grup_mogut);
+        s.managedCentres.get(centre2).add(nou);
 
         return ret;
     }
