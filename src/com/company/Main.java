@@ -12,7 +12,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        State test = new State(10, 10, 5);
+        State test = new State(100, 10, 5);
         HillClimbingSearch(test);
     }
 

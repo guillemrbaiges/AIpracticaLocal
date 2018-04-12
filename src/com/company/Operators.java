@@ -44,7 +44,7 @@ public class Operators  implements SuccessorFunction {
                         /**fem un move dels grups a un nou vol d'un centre */
                         //State aux = move_nou(state, i1, j1, k1, i2);
                         State aux = state;
-                        if (aux != null) retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, aux));
+                        if (aux != null) retval.add(new Successor("Move (nou) between centre " + i1 + " i centre" + i2, aux));
                         for (int j2 = 0; j2 < state.managedCentres.get(i2).size(); j2++) { /**recorrem tots els vols de cada centre*/
                             if (state.managedCentres.get(i2).get(j2).toRescue.size() < 3) {
                                 /**si el vol té menys de 3 centre fem un move a cada una de les possibles posicions */
@@ -134,32 +134,26 @@ public class Operators  implements SuccessorFunction {
      * per afegir un nou vol a un centre amb un unic grup, identificat per centre1, vol1 i pos1
      */
     public State move_nou (State s, int centre1, int vol1, int pos1, int centre2) {
-        System.out.println("1");
+
         if (s.managedCentres.get(centre1).size() != 0) {
-            System.out.println("2");
+
             Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
-            System.out.println("3");
+
             s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
             s.managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
-            System.out.println("4");
+
             /**eliminem el vol en cas de que quedi vuit*/
             if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
                 s.managedCentres.get(centre1).remove(vol1);
-            System.out.println("5");
+
             /**Creem nou Path i l'afegim al centre2*/
             State.Path nou = new State.Path();
             nou.toRescue = new ArrayList<Grupo>();
             nou.toRescue.add(grup_mogut);
             s.managedCentres.get(centre2).add(nou);
         }
-        System.out.println("6");
+
         return s;
     }
 
-    static class Path
-    {
-        public Integer pathID;
-        public ArrayList<Grupo> toRescue = new ArrayList<>();
-        public Integer capacity = 15;
-    };
 }

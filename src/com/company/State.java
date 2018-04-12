@@ -53,10 +53,8 @@ public class State {
         managedCentres.add(test);
         printFirstSolution();
 
-        managedCentres = genFirstSolutionDummy();
-        //printFirstSolution();
-
-        System.out.println();
+        //managedCentres = genFirstSolutionDummy();
+        //printFirstSolution(); System.out.println();
 
         managedCentres = genFirstSolutionEficient();
         printFirstSolution();
