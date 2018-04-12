@@ -24,8 +24,8 @@ public class Operators  implements SuccessorFunction {
 
                             /**comprovem que no és el mateix element i fem el swap*/
                             if (i1!=i2 || j1!=j2 || k1!=k2) {
-                                    State s = swap(state, i1, j1, k1, i2, j2, k2);
-                                    if (s != null) retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, s));
+                                    State aux = swap(state, i1, j1, k1, i2, j2, k2);
+                                    if (aux != null) retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, aux));
                                 }
                             }
                         }
@@ -39,19 +39,21 @@ public class Operators  implements SuccessorFunction {
         for (int i1 = 0; i1 < state.managedCentres.size(); i1++) { /**recorrem tots els centres*/
             for (int j1 = 0; j1 < state.managedCentres.get(i1).size(); j1++) { /**recorrem tots els vols de cada centre*/
                 for (int k1 = 0; k1 < state.managedCentres.get(i1).get(j1).toRescue.size(); k1++) { /**recorrem l'Array toRescue de cada vol (Path)*/
+
                     for (int i2 = 0; i2 < state.managedCentres.size(); i2++) { /**recorrem tots els centres*/
 
                         /**fem un move dels grups a un nou vol d'un centre */
                         //State aux = move_nou(state, i1, j1, k1, i2);
                         State aux = state;
-                        if (aux != null) retval.add(new Successor("Move (nou) between centre " + i1 + " i centre" + i2, aux));
+                        if (aux != null) retval.add(new Successor("Move (nou) group between centre " + i1 + " i centre" + i2, aux));
+
                         for (int j2 = 0; j2 < state.managedCentres.get(i2).size(); j2++) { /**recorrem tots els vols de cada centre*/
-                            if (state.managedCentres.get(i2).get(j2).toRescue.size() < 3) {
-                                /**si el vol té menys de 3 centre fem un move a cada una de les possibles posicions */
-                                for (int p = 0; p < state.managedCentres.get(i2).get(j2).toRescue.size(); p++) {
-                                    State s = move(state, i1, j1, k1, i2, j2, p);
-                                    if (s != null) retval.add(new Successor("Move between centre " + i1 + " i centre" + i2, s));
-                                }
+
+                            /**si el vol té menys de 3 centre fem un move a cada una de les possibles posicions */
+                            for (int k2 = 0; k2 < state.managedCentres.get(i2).get(j2).toRescue.size(); k2++) {
+
+                                State aux2 = move(state, i1, j1, k1, i2, j2, k2);
+                                if (aux2 != null) retval.add(new Successor("Move between centre " + i1 + " i centre" + i2, aux2));
                             }
                         }
                     }
@@ -103,19 +105,22 @@ public class Operators  implements SuccessorFunction {
         State ret = null;
 
         /**comprobem que podem afegir un nou rescat, el "path destí" no pot tenir 3 grups*/
-        if (s.managedCentres.get(centre2).size() != 0 && s.managedCentres.get(centre2).get(vol2).toRescue.size() < 3) {
+        if (0 <= vol1 && vol1 < s.managedCentres.get(centre1).size() &&
+                0 <= pos1 && pos1 < s.managedCentres.get(centre1).get(vol1).toRescue.size() &&
+                0 <= vol2 && vol2 < s.managedCentres.get(centre2).size() &&
+                0 <= pos2 && pos2 < s.managedCentres.get(centre2).get(vol2).toRescue.size()) {
+
             int rescatsVol = 0;
             for (int i = 0; i < s.managedCentres.get(centre2).get(vol2).toRescue.size(); i++)
                 rescatsVol += s.managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
 
             /**s'ha de mantenir la restricció d'un màxim de 15 persones per helicòpter*/
-
-            if (s.managedCentres.get(centre1).size() != 0 && rescatsVol + s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
+            if (rescatsVol + s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
                 ret = s;
                 Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
                 s.managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
-                s.managedCentres.get(centre1).get(vol1).toRescue.add(pos2, grup_mogut);
+                s.managedCentres.get(centre2).get(vol2).toRescue.add(pos2, grup_mogut);
 
                 /**actualitzem valors de capacitat*/
                 s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
@@ -123,7 +128,7 @@ public class Operators  implements SuccessorFunction {
 
                 /**eliminem el vol en cas de que quedi vuit*/
                 if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
-                    s.managedCentres.get(centre1).remove(s.managedCentres.get(centre1).get(vol1));
+                    s.managedCentres.get(centre1).remove(vol1);
             }
         }
         return ret;
@@ -146,6 +151,7 @@ public class Operators  implements SuccessorFunction {
             if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
                 s.managedCentres.get(centre1).remove(vol1);
 
+
             /**Creem nou Path i l'afegim al centre2*/
             State.Path nou = new State.Path();
             nou.toRescue = new ArrayList<Grupo>();
@@ -154,6 +160,7 @@ public class Operators  implements SuccessorFunction {
         }
 
         return s;
+
     }
 
 }
