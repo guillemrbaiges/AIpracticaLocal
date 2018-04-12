@@ -8,7 +8,8 @@ import java.util.List;
 public class Operators  implements SuccessorFunction {
 
     /**parametre state ha de ser de tipus Object*/
-    public List getSuccessors (Object state) {
+    public List getSuccessors (Object S) {
+        State state = (State) S;
         ArrayList<State> retval = new ArrayList<>();
 
         /**Possibles successors fent swaps de grups*/
@@ -110,11 +111,11 @@ public class Operators  implements SuccessorFunction {
 
             /**s'ha de mantenir la restricció d'un màxim de 15 persones per helicòpter*/
             if (rescatsVol + s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
-                ret = (State) s;
+                ret = s;
                 Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
-                s.managedCentres.get(centre1).get(vol1).remove(pos1);
-                s.managedCentres.get(centre1).get(vol1).add(pos2, grup_mogut);
+                s.managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
+                s.managedCentres.get(centre1).get(vol1).toRescue.add(pos2, grup_mogut);
 
                 /**actualitzem valors de capacitat*/
                 s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
@@ -137,7 +138,7 @@ public class Operators  implements SuccessorFunction {
         Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
         s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
-        s.managedCentres.get(centre1).get(vol1).remove(pos1);
+        s.managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
 
         /**eliminem el vol en cas de que quedi vuit*/
         if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)

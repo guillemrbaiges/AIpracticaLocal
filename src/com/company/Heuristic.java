@@ -1,5 +1,6 @@
 package com.company;
 
+import IA.Desastres.*;
 import aima.basic.XYLocation;
 import aima.search.framework.HeuristicFunction;
 
@@ -9,9 +10,10 @@ import java.util.ArrayList;
  * @author Jordi Foix
  *
  */
-public class FoixHeuristicFunction implements HeuristicFunction {
+public class Heuristic implements HeuristicFunction {
 
-    public double getHeuristicValue(State state) {
+    public double getHeuristicValue(Object S) {
+        State state = (State) S;
 
         //Sumem el temps total de la solucio, fent per cada viatge: calcul del temps a partir de la distancia + 10 minuts + el temps de recollir la gent
 
@@ -23,12 +25,12 @@ public class FoixHeuristicFunction implements HeuristicFunction {
         double distance, totalTime = 0; //temps en minuts, distància en km
 
         for (int i = 0; i < managedCentres.size(); ++i) {
-            for (int j = 0; j < managedCentres[i].size(); ++j) { // centre i, path j
-                for (int k = 0; k < managedCentres[i][j].toRescue.size(); ++k) { //aquest loop és per trobar l'índex dels grups assignats al path j
+            for (int j = 0; j < managedCentres.get(i).size(); ++j) { // centre i, path j
+                for (int k = 0; k < managedCentres.get(i).get(j).toRescue.size(); ++k) { //aquest loop és per trobar l'índex dels grups assignats al path j
                     for (int l = 0; l < G.size(); ++l) {
-                        if (managedCentres[i][j].toRescue[k] == G.get(l)) {
+                        if (managedCentres.get(i).get(j).toRescue.get(k) == G.get(l)) {
                             distance = 0;
-                            if (k == 0 or k ==managedCentres[i][j].toRescue.size() - 1)
+                            if (k == 0 || k == (managedCentres.get(i).get(j).toRescue.size() - 1) )
                                 distance = centresGroupsAdjM[i][l];
                             else
                                 distance = groupsAdjM[l][lastIndex];

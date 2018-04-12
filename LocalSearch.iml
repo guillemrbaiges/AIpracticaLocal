@@ -10,7 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../Desastres/Desastres.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Desastres/Desastres.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -19,7 +19,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../AIMA/AIMA.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../AIMA/dist/AIMA.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -5,9 +5,6 @@ import IA.Desastres.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**********************MAYB NO NECESSITEM centresAdjM***************************************/
-
-
 public class State {
 
     public static int NUM_COPTERS = 2;
@@ -17,6 +14,21 @@ public class State {
     private Centros C;
     private Double[][] groupsAdjM;
     private Double[][] centresAdjM;
+
+    public ArrayList<ArrayList<Path>> getManagedCenters() { return managedCentres; }
+
+    public Double[][] getCentresGroupsAdjM() { return centresAdjM; }
+
+    public Double[][] getGroupsAdjM() { return groupsAdjM; }
+
+    public Grupos getG() { return G; }
+
+    static class Path
+    {
+        public Integer pathID;
+        public ArrayList<Grupo> toRescue = new ArrayList<>();
+        public Integer capacity = 15;
+    };
 
     /** Representation of the state: A graph where the nodes are the Centres and the Groups.
      *  The groups are connected to each other and there is a link between each node and each graph.
@@ -328,11 +340,4 @@ public class State {
     private Double distance(int x1, int y1, int x2, int y2) {
         return Math.sqrt( Math.pow( x1 - x2, 2 ) + Math.pow( y1 - y2, 2 ));
     }
-
-    class Path
-    {
-        public Integer pathID;
-        public ArrayList<Grupo> toRescue = new ArrayList<>();
-        public Integer capacity = 15;
-    };
 }
