@@ -17,14 +17,14 @@ public class Main {
     }
 
     private static void HillClimbingSearch(State state) {
-        System.out.println("\nIA15 Iterative Deepening AStar H2 -->");
+        System.out.println("\nHill Climbing Search -->");
         try {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic());
             Search search = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem, search);
 
             System.out.println();
-            //printActions(agent.getActions());
+            printActions(agent.getActions());
             //printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,17 +32,25 @@ public class Main {
     }
 
     private static void SimulatedAnnealingSearch(State state) {
-        System.out.println("\nIA15 Iterative Deepening AStar H2 -->");
+        System.out.println("\nSimulated Annealing Search -->");
         try {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic());
             Search search = new SimulatedAnnealingSearch();                         //TODO: add parametres to the search function
             SearchAgent agent = new SearchAgent(problem, search);
 
             System.out.println();
-            //printActions(agent.getActions());
+            printActions(agent.getActions());
             //printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void printActions(List actions) {
+        System.out.println("#Accions" + actions.size());
+        for (int i = 0; i < actions.size(); i++) {
+            String action = (String) actions.get(i);
+            System.out.println(action);
         }
     }
 
