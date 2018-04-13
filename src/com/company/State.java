@@ -67,8 +67,8 @@ public class State {
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
 
-        for (int i = 0; i < C.size(); ++i)
-            System.out.println("Center: " + i + " " + C.get(i).getCoordX() + " " + C.get(i).getCoordY());
+        //for (int i = 0; i < C.size(); ++i)
+            //System.out.println("Center: " + i + " " + C.get(i).getCoordX() + " " + C.get(i).getCoordY());
 
         Path p = new Path();
         p.toRescue.add(G.get(0));
@@ -76,13 +76,35 @@ public class State {
         ArrayList<Path> test = new ArrayList<>();
         test.add(p);
         managedCentres.add(test);
-        printFirstSolution();
+        //printFirstSolution();
+
 
         //managedCentres = genFirstSolutionDummy();
         //printFirstSolution(); System.out.println();
 
         managedCentres = genFirstSolutionEficient();
-        printFirstSolution();
+
+        //printFirstSolution();
+        for (int i = 0; i < managedCentres.size(); i++) {
+            System.out.println("centre " + i);
+            for (int j = 0; j < managedCentres.get(i).size(); j++) {
+                System.out.println("    vol " + j);
+                printGroup(managedCentres.get(i).get(j));
+            }
+        }
+        move(1, 1, 0, 0, 2, 0);
+        System.out.println("___________fem el move_____________");
+
+        for (int i = 0; i < managedCentres.size(); i++) {
+            System.out.println("centre " + i);
+            for (int j = 0; j < managedCentres.get(i).size(); j++) {
+                System.out.println("    vol " + j);
+                printGroup(managedCentres.get(i).get(j));
+            }
+        }
+        System.out.println();
+
+        //printFirstSolution();
     }
 
     public State getCopy() {
@@ -381,101 +403,113 @@ public class State {
     /** OPERATORS */
 
     /**funció a la classe State*/
-    public State swap (State s, int centre1, int vol1, int pos1, int centre2, int vol2, int pos2) {
-        //comprovar si es pot fer el canvi
-        State ret = s;
-        int rescatsVol1 = 0;
-        int rescatsVol2 = 0;
+    public void swap (int centre1, int vol1, int pos1, int centre2, int vol2, int pos2) {
+        if (0 <= vol1 && vol1 < managedCentres.get(centre1).size() &&
+                0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size() &&
+                0 <= vol2 && vol2 < managedCentres.get(centre2).size() &&
+                0 <= pos2 && pos2 < managedCentres.get(centre2).get(vol2).toRescue.size()) {
 
-        /**calculem el nombre de persones rescatades despres de fer el swap en el primer i segon vol*/
-        for (int i = 0; i < s.managedCentres.get(centre1).get(vol1).toRescue.size(); i++) {
-            if (i == pos1) rescatsVol2 += s.managedCentres.get(centre1).get(vol1).toRescue.get(i).getNPersonas();
-            else rescatsVol1 += s.managedCentres.get(centre1).get(vol1).toRescue.get(i).getNPersonas();
+            int rescatsVol1 = 0;
+            int rescatsVol2 = 0;
+
+            /**calculem el nombre de persones rescatades despres de fer el swap en el primer i segon vol*/
+            if (centre1 != centre2 || vol1 != vol2) {
+                for (int i = 0; i < managedCentres.get(centre1).get(vol1).toRescue.size(); i++)
+                    if (i != pos1) rescatsVol1 += managedCentres.get(centre1).get(vol1).toRescue.get(i).getNPersonas();
+
+                for (int i = 0; i < managedCentres.get(centre2).get(vol2).toRescue.size(); i++)
+                    if (i != pos2) rescatsVol2 += managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
+
+                rescatsVol1 += managedCentres.get(centre2).get(vol2).toRescue.get(pos2).getNPersonas();
+                rescatsVol2 += managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas();
+
+                System.out.println("rescats vol 1: " + rescatsVol1);
+                System.out.println("rescats vol 2: " + rescatsVol2);
+            }
+
+
+            /**comprovem que en fer el swap mantenim la restriccióde màxim 15 persones per helicòpter*/
+            if (rescatsVol1 <= 15 && rescatsVol2 <= 15) {
+                Grupo temp = (Grupo) managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+
+                managedCentres.get(centre1).get(vol1).toRescue.set(pos1, managedCentres.get(centre2).get(vol2).toRescue.get(pos2));
+                managedCentres.get(centre2).get(vol2).toRescue.set(pos2, temp);
+
+                /**actualitzem valors de capacitat*/
+                managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
+                managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
+                System.out.println("estem a la funci del swap!!!!!!!!!!!");
+                for (int i = 0; i < managedCentres.size(); i++) {
+                    System.out.println("centre " + i);
+                    for (int j = 0; j < managedCentres.get(i).size(); j++) {
+                        System.out.println("    vol " + j);
+                        printGroup(managedCentres.get(i).get(j));
+                    }
+                }
+
+            }
         }
 
-        for (int i = 0; i < s.managedCentres.get(centre2).get(vol2).toRescue.size(); i++) {
-            if (i == pos2) rescatsVol1 += s.managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
-            else rescatsVol2 += s.managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
-        }
-
-        /**comprovem que en fer el swap mantenim la restriccióde màxim 15 persones per helicòpter*/
-        if (rescatsVol1 <= 15 && rescatsVol2 <= 15) {
-            ret = (State) s;
-            Grupo temp = (Grupo) ret.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
-
-            ret.managedCentres.get(centre1).get(vol1).toRescue.set(pos1, ret.managedCentres.get(centre2).get(vol2).toRescue.get(pos2));
-            ret.managedCentres.get(centre2).get(vol2).toRescue.set(pos2, temp);
-
-            /**actualitzem valors de capacitat*/
-            ret.managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
-            ret.managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
-
-        }
-
-        return ret;
     }
 
 
     /**funció a la classe State*/
-    public State move (State s, int centre1, int vol1, int pos1, int centre2, int vol2, int pos2) {
-        State ret = null;
+    public void move (int centre1, int vol1, int pos1, int centre2, int vol2, int pos2) {
 
         /**comprobem que podem afegir un nou rescat, el "path destí" no pot tenir 3 grups*/
-        if (0 <= vol1 && vol1 < s.managedCentres.get(centre1).size() &&
-                0 <= pos1 && pos1 < s.managedCentres.get(centre1).get(vol1).toRescue.size() &&
-                0 <= vol2 && vol2 < s.managedCentres.get(centre2).size() &&
-                0 <= pos2 && pos2 < s.managedCentres.get(centre2).get(vol2).toRescue.size()) {
-
+        if (0 <= vol1 && vol1 < managedCentres.get(centre1).size() &&
+                0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size() &&
+                0 <= vol2 && vol2 < managedCentres.get(centre2).size() &&
+                0 <= pos2 && pos2 < managedCentres.get(centre2).get(vol2).toRescue.size()) {
+            System.out.println("entrem");
             int rescatsVol = 0;
-            for (int i = 0; i < s.managedCentres.get(centre2).get(vol2).toRescue.size(); i++)
-                rescatsVol += s.managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
+            for (int i = 0; i < managedCentres.get(centre2).get(vol2).toRescue.size(); i++)
+                rescatsVol += managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
+                System.out.println("rescats vol: " + rescatsVol);
 
             /**s'ha de mantenir la restricció d'un màxim de 15 persones per helicòpter*/
-            if (rescatsVol + s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
-                ret = s;
-                Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+            if (rescatsVol + managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
+                System.out.println("entrem al segon if");
 
-                s.managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
-                s.managedCentres.get(centre2).get(vol2).toRescue.add(pos2, grup_mogut);
+                Grupo grup_mogut = managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+
+                managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
+                managedCentres.get(centre2).get(vol2).toRescue.add(pos2, grup_mogut);
 
                 /**actualitzem valors de capacitat*/
-                s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
-                s.managedCentres.get(centre2).get(vol2).capacity += grup_mogut.getNPersonas();
+                managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
+                managedCentres.get(centre2).get(vol2).capacity += grup_mogut.getNPersonas();
 
                 /**eliminem el vol en cas de que quedi vuit*/
-                if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
-                    s.managedCentres.get(centre1).remove(vol1);
+                if (managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
+                    managedCentres.get(centre1).remove(vol1);
             }
         }
-        return ret;
     }
 
 
     /**funcio a la classe State
      * per afegir un nou vol a un centre amb un unic grup, identificat per centre1, vol1 i pos1
      */
-    public State move_nou (State s, int centre1, int vol1, int pos1, int centre2) {
+    public void move_nou (int centre1, int vol1, int pos1, int centre2) {
+        if (0 <= vol1 && vol1 < managedCentres.get(centre1).size() &&
+                0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size()) {
 
-        if (s.managedCentres.get(centre1).size() != 0) {
+            Grupo grup_mogut = managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
-            Grupo grup_mogut = s.managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
-
-            s.managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
-            s.managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
+            managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
+            managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
 
             /**eliminem el vol en cas de que quedi vuit*/
-            if (s.managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
-                s.managedCentres.get(centre1).remove(vol1);
-
+            if (managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
+                managedCentres.get(centre1).remove(vol1);
 
             /**Creem nou Path i l'afegim al centre2*/
             State.Path nou = new State.Path();
             nou.toRescue = new ArrayList<Grupo>();
             nou.toRescue.add(grup_mogut);
-            s.managedCentres.get(centre2).add(nou);
+            nou.capacity = grup_mogut.getNPersonas();
+            managedCentres.get(centre2).add(nou);
         }
-
-        return s;
-
     }
 }

@@ -13,14 +13,14 @@ public class Operators_SA implements SuccessorFunction {
      * parametre state ha de ser de tipus Object
      */
     public List getSuccessors(Object S) {
-        State st = (State) S.getCopy();
+        State a = (State) S;
+        State st = a.getCopy();
         ArrayList retval = new ArrayList();
 
         Random generator = new Random();
         int p = generator.nextInt(100);
 
         int i1, i2, j1, j2, k1, k2;
-
         /**Swap*/
         if (0 <= p && p < 50) {
             //System.out.println("Intentem fer un swap random");
@@ -34,11 +34,9 @@ public class Operators_SA implements SuccessorFunction {
                         j2 = generator.nextInt(st.managedCentres.get(i2).size());
                         if (st.managedCentres.get(i2).get(j2).toRescue.size() != 0) {
                             k2 = generator.nextInt(st.managedCentres.get(i2).get(j2).toRescue.size());
-                            st = st.swap(st, i1, j1, k1, i2, j2, k2);
-                            if (st != null) {
-                                retval.add(st);
-                                //System.out.println("Swap random realitzat. size retval: " + retval.size());
-                            }
+                            st.swap(i1, j1, k1, i2, j2, k2);
+                            retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, st));
+                            //System.out.println("Swap random realitzat. size retval: " + retval.size());
                         }
                     }
                 }
@@ -59,11 +57,9 @@ public class Operators_SA implements SuccessorFunction {
                         if (st.managedCentres.get(i2).get(j2).toRescue.size() != 0 &&
                                 st.managedCentres.get(i2).get(j2).toRescue.size() < 3) {
                             k2 = generator.nextInt(st.managedCentres.get(i2).get(j2).toRescue.size() + 1);
-                            st = st.move(st, i1, j1, k1, i2, j2, k2);
-                            if (st != null) {
-                                retval.add(st);
-                                //System.out.println("Move random realitzat. size retval: " + retval.size());
-                            }
+                            st.move(i1, j1, k1, i2, j2, k2);
+                            retval.add(new Successor("Move between centre " + i1 + " i centre" + i2, st));
+                            //System.out.println("Move random realitzat. size retval: " + retval.size());
                         }
                     }
                 }
@@ -79,11 +75,9 @@ public class Operators_SA implements SuccessorFunction {
                 if (st.managedCentres.get(i1).get(j1).toRescue.size() != 0) {
                     k1 = generator.nextInt(st.managedCentres.get(i1).get(j1).toRescue.size());
                     i2 = generator.nextInt(st.managedCentres.size());
-                    st = st.move_nou(st, i1, j1, k1, i2);
-                    if (st != null) {
-                        retval.add(st);
-                        //System.out.println("Move nou random realitzat. size retval: " + retval.size());
-                    }
+                    st.move_nou(i1, j1, k1, i2);
+                    retval.add(new Successor("Move (nou) group between centre " + i1 + " i centre" + i2, st));
+                    //System.out.println("Move nou random realitzat. size retval: " + retval.size());
                 }
             }
         }
