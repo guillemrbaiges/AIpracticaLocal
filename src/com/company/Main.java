@@ -1,19 +1,55 @@
 package com.company;
 
+import IA.Desastres.Centro;
+import IA.Desastres.Centros;
+import IA.Desastres.Grupo;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
+import aima.search.framework.Successor;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class Main {
 
     public static void main(String[] args) {
-        State test = new State(100, 10, 5);
+        State test = new State(10, 3, 3);
         HillClimbingSearch(test);
+    }
+
+    public static void printFirstSolution(State s) {
+
+        String[][] scene = new String[50][50];
+        for (int i = 0; i < scene.length; ++i)
+            for (int j = 0; j < scene[i].length; ++j) scene[i][j] = ".";
+
+        Centro c;
+        for (int i = 0; i < s.getC().size(); ++i) {
+            c = s.getC().get(i);
+            scene[c.getCoordY()][c.getCoordX()] = "c" + String.valueOf(i);
+        }
+
+
+        for (int i = 0; i < s.managedCentres.size(); ++i)
+            for (int j = 0; j < s.managedCentres.get(i).size(); ++j) {
+                State.Path p = s.managedCentres.get(i).get(j);
+                for (int l = 0; l < p.toRescue.size(); ++l) {
+                    Grupo g = p.toRescue.get(l);
+                    scene[g.getCoordY()][g.getCoordX()] = String.valueOf(i);
+                }
+            }
+
+        for (int i = 0; i < scene.length; ++i) {
+            for (int j = 0; j < scene[i].length; ++j)
+                System.out.print(scene[i][j]);
+            System.out.println();
+        }
+
     }
 
     private static void HillClimbingSearch(State state) {
@@ -22,10 +58,9 @@ public class Main {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic());
             Search search = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem, search);
-            System.out.println(agent.getActions().size());
-            System.out.println();
-            printActions(agent.getActions());
-            //printInstrumentation(agent.getInstrumentation());
+
+            //printActions(agent.getActions());
+            printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,6 +78,15 @@ public class Main {
             //printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void printInstrumentation(Properties properties) {
+        Iterator keys = properties.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            String property = properties.getProperty(key);
+            System.out.println(key + " : " + property);
         }
     }
 

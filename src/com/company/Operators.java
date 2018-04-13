@@ -3,8 +3,11 @@ package com.company;
 import IA.Desastres.*;
 import aima.search.framework.Successor;
 import aima.search.framework.SuccessorFunction;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Operators  implements SuccessorFunction {
 
@@ -24,7 +27,8 @@ public class Operators  implements SuccessorFunction {
 
                             /**comprovem que no és el mateix element i fem el swap*/
                             if (i1!=i2 || j1!=j2 || k1!=k2) {
-                                    State aux = state.swap(state, i1, j1, k1, i2, j2, k2);
+                                    State aux = state.getCopy();
+                                    aux.swap(aux, i1, j1, k1, i2, j2, k2);
                                     if (aux != null) retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, aux));
                                 }
                             }
@@ -64,8 +68,6 @@ public class Operators  implements SuccessorFunction {
         //    }
      //   }
 
-        System.out.println("size de retval :" + retval.size());
         return retval;
     }
-
 }

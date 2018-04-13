@@ -2,6 +2,7 @@ package com.company;
 
 import IA.Desastres.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,6 +15,7 @@ public class State {
     private Centros C;
     private Double[][] groupsAdjM;
     private Double[][] centresAdjM;
+    private Double totalTime = 0.0;
 
     public ArrayList<ArrayList<Path>> getManagedCenters() { return managedCentres; }
 
@@ -23,11 +25,27 @@ public class State {
 
     public Grupos getG() { return G; }
 
+    public Centros getC() { return C; }
+
     static class Path
     {
         public Integer pathID;
         public ArrayList<Grupo> toRescue = new ArrayList<>();
         public Integer capacity = 15;
+
+        public Path() {}
+
+        public Path(ArrayList<Grupo> resc) {
+            toRescue = resc;
+        }
+
+        public Path getCopy() {
+            ArrayList<Grupo> newResc = new ArrayList<Grupo>(toRescue.size());
+            for (Grupo elm : toRescue)
+                newResc.add(elm);
+
+            return new Path(newResc);
+        }
     };
 
     /** Representation of the state: A graph where the nodes are the Centres and the Groups.
@@ -36,6 +54,13 @@ public class State {
      *  edges have a weight equal to the distance between elements. */
 
     public State() {};
+
+    public State( ArrayList<ArrayList<Path> > mngcentres, Grupos inG, Centros inC, Double[][] cAdjM, Double[][] gAdjM) {
+        G = inG; C = inC;
+        centresAdjM = cAdjM;
+        groupsAdjM = gAdjM;
+        managedCentres = mngcentres;
+    }
 
     public State(int nGrupos, int nCentros, int seed) {
         G = new Grupos(nGrupos, seed);
@@ -60,7 +85,20 @@ public class State {
         printFirstSolution();
     }
 
-    private void printFirstSolution() {
+    public State getCopy() {
+        ArrayList<ArrayList<Path>> copy = new ArrayList<>(C.size());
+
+        for (int i = 0; i < C.size(); i++){
+            copy.add(new ArrayList<>());
+            for (int j = 0; j < managedCentres.get(i).size(); ++j){
+                copy.get(i).add(managedCentres.get(i).get(j).getCopy());
+            }
+        }
+
+        return new State(copy, G, C, centresAdjM, groupsAdjM);
+    }
+
+    public void printFirstSolution() {
 
         String[][] scene = new String[50][50];
         for (int i = 0; i < scene.length; ++i)
@@ -345,7 +383,7 @@ public class State {
     /**funció a la classe State*/
     public State swap (State s, int centre1, int vol1, int pos1, int centre2, int vol2, int pos2) {
         //comprovar si es pot fer el canvi
-        State ret = null;
+        State ret = s;
         int rescatsVol1 = 0;
         int rescatsVol2 = 0;
 
