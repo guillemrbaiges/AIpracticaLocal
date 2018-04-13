@@ -22,7 +22,7 @@ public class Main {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic());
             Search search = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem, search);
-
+            System.out.println(agent.getActions().size());
             System.out.println();
             printActions(agent.getActions());
             //printInstrumentation(agent.getInstrumentation());
