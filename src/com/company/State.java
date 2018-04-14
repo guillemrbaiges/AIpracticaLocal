@@ -507,10 +507,98 @@ public class State {
 
             /**comprovem que en fer el swap mantenim la restriccióde màxim 15 persones per helicòpter*/
             if (rescatsVol1 <= 15 && rescatsVol2 <= 15) {
-                Grupo temp = (Grupo) managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+                Grupo temp1 = (Grupo) managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
+                Grupo temp2 = (Grupo) managedCentres.get(centre2).get(vol2).toRescue.get(pos2);
+                Path p1 = managedCentres.get(centre1).get(vol1);
+                Path p2 = managedCentres.get(centre2).get(vol2);
 
-                managedCentres.get(centre1).get(vol1).toRescue.set(pos1, managedCentres.get(centre2).get(vol2).toRescue.get(pos2));
-                managedCentres.get(centre2).get(vol2).toRescue.set(pos2, temp);
+                p1.toRescue.set(pos1, temp2);
+                p2.toRescue.set(pos2, temp1);
+
+                int adjacencyBeforePath1X, adjacencyBeforePath1Y, adjacencyAfterPath1X, adjacencyAfterPath1Y;
+                int adjacencyBeforePath2X, adjacencyBeforePath2Y, adjacencyAfterPath2X, adjacencyAfterPath2Y;
+                switch (pos1) {
+                    case 0: {
+                        adjacencyBeforePath1X = C.get(centre1).getCoordX();
+                        adjacencyBeforePath1Y = C.get(centre1).getCoordY();
+                        if (p1.toRescue.size() == 1) {
+                            adjacencyAfterPath1X = adjacencyBeforePath1X;
+                            adjacencyAfterPath1Y = adjacencyBeforePath1Y;
+                        }
+                        else {
+                            adjacencyAfterPath1X = p1.toRescue.get(1).getCoordX();
+                            adjacencyAfterPath1Y = p1.toRescue.get(1).getCoordY();
+                        }
+                    }
+                    case 1: {
+                        adjacencyBeforePath1X = p1.toRescue.get(0).getCoordX();
+                        adjacencyBeforePath1Y = p1.toRescue.get(0).getCoordY();
+                        if (p1.toRescue.size() == 2) {
+                            adjacencyAfterPath1X = C.get(centre1).getCoordX();
+                            adjacencyAfterPath1Y = C.get(centre1).getCoordY();
+                        }
+                        else {
+                            adjacencyAfterPath1X = p1.toRescue.get(2).getCoordX();
+                            adjacencyAfterPath1Y = p1.toRescue.get(2).getCoordY();
+                        }
+                    }
+                    default: {
+                        adjacencyBeforePath1X = p1.toRescue.get(1).getCoordX();
+                        adjacencyBeforePath1Y = p1.toRescue.get(1).getCoordY();
+                        adjacencyAfterPath1X = C.get(centre1).getCoordX();
+                        adjacencyAfterPath1Y = C.get(centre1).getCoordY();
+                    }
+                }
+                switch (pos2) {
+                    case 0: {
+                        adjacencyBeforePath2X = C.get(centre2).getCoordX();
+                        adjacencyBeforePath2Y = C.get(centre2).getCoordY();
+                        if (p2.toRescue.size() == 1) {
+                            adjacencyAfterPath2X = adjacencyBeforePath2X;
+                            adjacencyAfterPath2Y = adjacencyBeforePath2Y;
+                        }
+                        else {
+                            adjacencyAfterPath2X = p2.toRescue.get(1).getCoordX();
+                            adjacencyAfterPath2Y = p2.toRescue.get(1).getCoordY();
+                        }
+                    }
+                    case 1: {
+                        adjacencyBeforePath2X = p2.toRescue.get(0).getCoordX();
+                        adjacencyBeforePath2Y = p2.toRescue.get(0).getCoordY();
+                        if (p2.toRescue.size() == 2) {
+                            adjacencyAfterPath2X = C.get(centre2).getCoordX();
+                            adjacencyAfterPath2Y = C.get(centre2).getCoordY();
+                        }
+                        else {
+                            adjacencyAfterPath2X = p2.toRescue.get(2).getCoordX();
+                            adjacencyAfterPath2Y = p2.toRescue.get(2).getCoordY();
+                        }
+                    }
+                    default: {
+                        adjacencyBeforePath2X = p2.toRescue.get(1).getCoordX();
+                        adjacencyBeforePath2Y = p2.toRescue.get(1).getCoordY();
+                        adjacencyAfterPath2X = C.get(centre2).getCoordX();
+                        adjacencyAfterPath2Y = C.get(centre2).getCoordY();
+                    }
+                }
+
+                distance -= distance(adjacencyBeforePath1X,adjacencyBeforePath1Y,
+                        temp1.getCoordX(),temp1.getCoordY());
+                distance -= distance(temp1.getCoordX(),temp1.getCoordY(),
+                        adjacencyAfterPath1X,adjacencyAfterPath1Y);
+                distance -= distance(adjacencyBeforePath2X,adjacencyBeforePath2Y,
+                        temp2.getCoordX(),temp2.getCoordY());
+                distance -= distance(temp2.getCoordX(),temp2.getCoordY(),
+                        adjacencyAfterPath2X,adjacencyAfterPath2Y);
+
+                distance += distance(adjacencyBeforePath1X,adjacencyBeforePath1Y,
+                        temp2.getCoordX(),temp2.getCoordY());
+                distance += distance(temp2.getCoordX(),temp2.getCoordY(),
+                        adjacencyAfterPath1X,adjacencyAfterPath1Y);
+                distance += distance(adjacencyBeforePath2X,adjacencyBeforePath2Y,
+                        temp1.getCoordX(),temp2.getCoordY());
+                distance += distance(temp2.getCoordX(),temp2.getCoordY(),
+                        adjacencyAfterPath1X,adjacencyAfterPath1Y);
 
                 /**actualitzem valors de capacitat*/
                 managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
