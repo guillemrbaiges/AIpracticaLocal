@@ -57,6 +57,7 @@ public class State {
     public State() {};
 
     public State( ArrayList<ArrayList<Path> > mngcentres, Grupos inG, Centros inC, Double[][] cAdjM, Double[][] gAdjM) {
+        distance = extraRescueTime1 = extraRescueTime2 = 0.0;
         G = inG; C = inC;
         centresAdjM = cAdjM;
         groupsAdjM = gAdjM;
@@ -64,6 +65,7 @@ public class State {
     }
 
     public State(int nGrupos, int nCentros, int seed) {
+        distance = extraRescueTime1 = extraRescueTime2 = 0.0;
         G = new Grupos(nGrupos, seed);
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
@@ -153,6 +155,7 @@ public class State {
 
     /** Generation of first solution: Dummy */
     private ArrayList< ArrayList<Path> > genFirstSolutionDummy() {
+        distance = extraRescueTime1 = extraRescueTime2 = 0.0;
         ArrayList< ArrayList<Path> > centres = new ArrayList<> ();
         for (int i = 0; i < C.size(); ++i) centres.add(new ArrayList<>());
 
@@ -190,16 +193,22 @@ public class State {
                 /* calculate the total distance of the path (distance), and the added time
                 (a part from the one associated to distance): */
                 distance += centresAdjM[inCharge][group1Index];
+                extraRescueTime1 += G.get(group1Index).getNPersonas()*1.0;
+                extraRescueTime2 += (G.get(group1Index).getPrioridad() == 1) ? G.get(group1Index).getNPersonas()*2.0 : G.get(group1Index).getNPersonas()*1.0;
                 if (group2Index != -1) {
+                    extraRescueTime1 += G.get(group2Index).getNPersonas()*1.0;
+                    extraRescueTime2 += (G.get(group2Index).getPrioridad() == 1) ? G.get(group2Index).getNPersonas()*2.0 : G.get(group2Index).getNPersonas()*1.0;
                     distance += groupsAdjM[group1Index][group2Index];
                     if (group3Index != -1) {
-                        extraRescueTime1 += G.get(i).getNPersonas()*1.0;
-                        extraRescueTime2 += (G.get(i).getPrioridad() == 1) ? G.get(i).getNPersonas()*2.0 : G.get(i).getNPersonas()*1.0;
+                        extraRescueTime1 += G.get(group3Index).getNPersonas()*1.0;
+                        extraRescueTime2 += (G.get(group3Index).getPrioridad() == 1) ? G.get(group3Index).getNPersonas()*2.0 : G.get(group3Index).getNPersonas()*1.0;
                         distance += groupsAdjM[group2Index][group3Index] + centresAdjM[inCharge][group3Index];
                     }
                     else distance += centresAdjM[inCharge][group2Index];
                 }
                 else distance += centresAdjM[inCharge][group1Index];
+                extraRescueTime1 += 10.0;
+                extraRescueTime2 += 10.0;
             }
         }
         return centres;
@@ -208,6 +217,8 @@ public class State {
     /** Generation of first solution: Efficient
      * In this case the Paths are assigned to the closer centre to 2 of the grups to rescue */
     private ArrayList< ArrayList<Path> > genFirstSolutionEficient() {
+        distance = extraRescueTime1 = extraRescueTime2 = 0.0;
+
         /** centres is the solution */
         ArrayList< ArrayList<Path> > centres = new ArrayList<> ();
         for (int i = 0; i < C.size(); ++i) centres.add(new ArrayList<>());
@@ -216,6 +227,7 @@ public class State {
         Boolean[] rescuedG = new Boolean[G.size()];
         for (int i = 0; i < rescuedG.length; ++i) rescuedG[i] = false;
 
+        int group1Index, group2Index, group3Index;
         Path p;
         int pathId = 0;
         Integer rescGroups = 0;
@@ -233,13 +245,14 @@ public class State {
 
                     int ngbor = closerDist(groupsAdjM[i], rescuedG, G, p.capacity, 0.0, false);
 
+                    int ngbor2 = -1;
                     if (ngbor != -1) {
                         rescuedG[ngbor] = true;
                         p.toRescue.add(G.get(ngbor));
                         rescGroups++;
                         p.capacity -= G.get(ngbor).getNPersonas();
 
-                        int ngbor2 = closerDist(groupsAdjM[i], rescuedG, G, p.capacity, groupsAdjM[i][ngbor], true);
+                        ngbor2 = closerDist(groupsAdjM[i], rescuedG, G, p.capacity, groupsAdjM[i][ngbor], true);
                         if (ngbor2 != -1) {
                             rescuedG[ngbor2] = true;
                             p.toRescue.add(G.get(ngbor2));
@@ -251,6 +264,27 @@ public class State {
 
                     int inCharge = closerCentre(p, C);
                     centres.get(inCharge).add(p);
+
+                    /* calculate the total distance of the path (distance), and the added time
+                    (a part from the one associated to distance): */
+                    distance += centresAdjM[inCharge][i];
+                    extraRescueTime1 += G.get(i).getNPersonas()*1.0;
+                    extraRescueTime2 += (G.get(i).getPrioridad() == 1) ? G.get(i).getNPersonas()*2.0 : G.get(i).getNPersonas()*1.0;
+                    if (ngbor != -1) {
+                        extraRescueTime1 += G.get(ngbor).getNPersonas()*1.0;
+                        extraRescueTime2 += (G.get(ngbor).getPrioridad() == 1) ? G.get(ngbor).getNPersonas()*2.0 : G.get(ngbor).getNPersonas()*1.0;
+                        distance += groupsAdjM[i][ngbor];
+                        if (ngbor2 != -1) {
+                            extraRescueTime1 += G.get(ngbor2).getNPersonas()*1.0;
+                            extraRescueTime2 += (G.get(ngbor2).getPrioridad() == 1) ? G.get(ngbor2).getNPersonas()*2.0 : G.get(ngbor2).getNPersonas()*1.0;
+                            extraRescueTime2 += (G.get(i).getPrioridad() == 1) ? G.get(i).getNPersonas()*2.0 : G.get(i).getNPersonas()*1.0;
+                            distance += groupsAdjM[ngbor][ngbor2] + centresAdjM[inCharge][ngbor2];
+                        }
+                        else distance += centresAdjM[inCharge][ngbor];
+                    }
+                    else distance += centresAdjM[inCharge][i];
+                    extraRescueTime1 += 10.0;
+                    extraRescueTime2 += 10.0;
                 }
             }
         }
