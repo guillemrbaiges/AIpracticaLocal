@@ -15,7 +15,8 @@ public class State {
     private Centros C;
     private Double[][] groupsAdjM;
     private Double[][] centresAdjM;
-    private Double totalTime = 0.0;
+    private Double distance, extraRescueTime1, extraRescueTime2; // 1 -> Sense prioritats; 2 -> Amb prioritats
+
 
     public ArrayList<ArrayList<Path>> getManagedCenters() { return managedCentres; }
 
@@ -159,8 +160,12 @@ public class State {
         for (int i = 0; i < rescuedG.length; ++i) rescuedG[i] = false;
         int pathId = 0;
 
+        int group1Index, group2Index, group3Index;
         for (int i = 0; i < G.size(); ++i) {
             if (!rescuedG[i]) {
+                extraRescueTime1 += 10.0;
+                extraRescueTime2 += 10.0;
+                group1Index = i; group2Index = -1; group3Index = -1;
                 rescuedG[i] = true;
                 Path p = new Path();
                 p.pathID = pathId;
@@ -173,15 +178,30 @@ public class State {
                         p.capacity -= G.get(j).getNPersonas();
                         p.toRescue.add(G.get(j));
                         rescuedG[j] = true;
+                        if (group2Index == -1) group2Index = j;
+                        else if (group3Index == -1) group3Index = j;
                     }
                 }
 
                 Random generator = new Random();
                 int inCharge = generator.nextInt(C.size());
                 centres.get(inCharge).add(p);
+
+                /* calculate the total distance of the path (distance), and the added time
+                (a part from the one associated to distance): */
+                distance += centresAdjM[inCharge][group1Index];
+                if (group2Index != -1) {
+                    distance += groupsAdjM[group1Index][group2Index];
+                    if (group3Index != -1) {
+                        extraRescueTime1 += G.get(i).getNPersonas()*1.0;
+                        extraRescueTime2 += (G.get(i).getPrioridad() == 1) ? G.get(i).getNPersonas()*2.0 : G.get(i).getNPersonas()*1.0;
+                        distance += groupsAdjM[group2Index][group3Index] + centresAdjM[inCharge][group3Index];
+                    }
+                    else distance += centresAdjM[inCharge][group2Index];
+                }
+                else distance += centresAdjM[inCharge][group1Index];
             }
         }
-
         return centres;
     }
 
