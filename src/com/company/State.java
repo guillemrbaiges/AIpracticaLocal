@@ -17,6 +17,29 @@ public class State {
     private Double[][] centresAdjM;
     private Double distance, extraRescueTime1, extraRescueTime2; // 1 -> Sense prioritats; 2 -> Amb prioritats
 
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    public Double getExtraRescueTime1() {
+        return extraRescueTime1;
+    }
+
+    public void setExtraRescueTime1(Double extraRescueTime1) {
+        this.extraRescueTime1 = extraRescueTime1;
+    }
+
+    public Double getExtraRescueTime2() {
+        return extraRescueTime2;
+    }
+
+    public void setExtraRescueTime2(Double extraRescueTime2) {
+        this.extraRescueTime2 = extraRescueTime2;
+    }
 
     public ArrayList<ArrayList<Path>> getManagedCenters() { return managedCentres; }
 
