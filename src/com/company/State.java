@@ -1,6 +1,7 @@
 package com.company;
 
 import IA.Desastres.*;
+import javafx.util.Pair;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -93,44 +94,21 @@ public class State {
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
 
-        //for (int i = 0; i < C.size(); ++i)
-            //System.out.println("Center: " + i + " " + C.get(i).getCoordX() + " " + C.get(i).getCoordY());
-
         Path p = new Path();
         p.toRescue.add(G.get(0));
         managedCentres = new ArrayList<>();
         ArrayList<Path> test = new ArrayList<>();
         test.add(p);
         managedCentres.add(test);
-        //printFirstSolution();
-
-
-        //managedCentres = genFirstSolutionDummy();
-        //printFirstSolution(); System.out.println();
-
         managedCentres = genFirstSolutionEficient();
 
-        //printFirstSolution();
-        for (int i = 0; i < managedCentres.size(); i++) {
+        /*for (int i = 0; i < managedCentres.size(); i++) {
             System.out.println("centre " + i);
             for (int j = 0; j < managedCentres.get(i).size(); j++) {
                 System.out.println("    vol " + j);
                 printGroup(managedCentres.get(i).get(j));
             }
-        }
-        move(1, 1, 0, 0, 2, 0);
-        System.out.println("___________fem el move_____________");
-
-        for (int i = 0; i < managedCentres.size(); i++) {
-            System.out.println("centre " + i);
-            for (int j = 0; j < managedCentres.get(i).size(); j++) {
-                System.out.println("    vol " + j);
-                printGroup(managedCentres.get(i).get(j));
-            }
-        }
-        System.out.println();
-
-        //printFirstSolution();
+        }*/
     }
 
     public State getCopy() {
@@ -376,9 +354,9 @@ public class State {
 
         /** For Debugging */
 
-        for (Grupo g: G) {
+        /*for (Grupo g: G) {
             System.out.println(g.getCoordX() + " " + g.getCoordY() + " " + g.getNPersonas() + " " + g.getPrioridad());
-        } System.out.println();
+        } System.out.println();*/
 
         /**for (Centro c: C) {
             System.out.println(c.getCoordX() + " " + c.getCoordY() + " " + c.getNHelicopteros());
@@ -500,8 +478,8 @@ public class State {
                 rescatsVol1 += managedCentres.get(centre2).get(vol2).toRescue.get(pos2).getNPersonas();
                 rescatsVol2 += managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas();
 
-                System.out.println("rescats vol 1: " + rescatsVol1);
-                System.out.println("rescats vol 2: " + rescatsVol2);
+                //System.out.println("rescats vol 1: " + rescatsVol1);
+                //System.out.println("rescats vol 2: " + rescatsVol2);
             }
 
 
@@ -517,6 +495,7 @@ public class State {
 
                 int adjacencyBeforePath1X, adjacencyBeforePath1Y, adjacencyAfterPath1X, adjacencyAfterPath1Y;
                 int adjacencyBeforePath2X, adjacencyBeforePath2Y, adjacencyAfterPath2X, adjacencyAfterPath2Y;
+
                 switch (pos1) {
                     case 0: {
                         adjacencyBeforePath1X = C.get(centre1).getCoordX();
@@ -529,6 +508,7 @@ public class State {
                             adjacencyAfterPath1X = p1.toRescue.get(1).getCoordX();
                             adjacencyAfterPath1Y = p1.toRescue.get(1).getCoordY();
                         }
+                        break;
                     }
                     case 1: {
                         adjacencyBeforePath1X = p1.toRescue.get(0).getCoordX();
@@ -541,12 +521,14 @@ public class State {
                             adjacencyAfterPath1X = p1.toRescue.get(2).getCoordX();
                             adjacencyAfterPath1Y = p1.toRescue.get(2).getCoordY();
                         }
+                        break;
                     }
                     default: {
                         adjacencyBeforePath1X = p1.toRescue.get(1).getCoordX();
                         adjacencyBeforePath1Y = p1.toRescue.get(1).getCoordY();
                         adjacencyAfterPath1X = C.get(centre1).getCoordX();
                         adjacencyAfterPath1Y = C.get(centre1).getCoordY();
+                        break;
                     }
                 }
                 switch (pos2) {
@@ -561,6 +543,7 @@ public class State {
                             adjacencyAfterPath2X = p2.toRescue.get(1).getCoordX();
                             adjacencyAfterPath2Y = p2.toRescue.get(1).getCoordY();
                         }
+                        break;
                     }
                     case 1: {
                         adjacencyBeforePath2X = p2.toRescue.get(0).getCoordX();
@@ -573,12 +556,14 @@ public class State {
                             adjacencyAfterPath2X = p2.toRescue.get(2).getCoordX();
                             adjacencyAfterPath2Y = p2.toRescue.get(2).getCoordY();
                         }
+                        break;
                     }
                     default: {
                         adjacencyBeforePath2X = p2.toRescue.get(1).getCoordX();
                         adjacencyBeforePath2Y = p2.toRescue.get(1).getCoordY();
                         adjacencyAfterPath2X = C.get(centre2).getCoordX();
                         adjacencyAfterPath2Y = C.get(centre2).getCoordY();
+                        break;
                     }
                 }
 
@@ -603,7 +588,6 @@ public class State {
                 /**actualitzem valors de capacitat*/
                 managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
                 managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
-                System.out.println("estem a la funci del swap!!!!!!!!!!!");
                 for (int i = 0; i < managedCentres.size(); i++) {
                     System.out.println("centre " + i);
                     for (int j = 0; j < managedCentres.get(i).size(); j++) {
@@ -626,16 +610,17 @@ public class State {
                 0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size() &&
                 0 <= vol2 && vol2 < managedCentres.get(centre2).size() &&
                 0 <= pos2 && pos2 < managedCentres.get(centre2).get(vol2).toRescue.size()) {
-            System.out.println("entrem");
             int rescatsVol = 0;
             for (int i = 0; i < managedCentres.get(centre2).get(vol2).toRescue.size(); i++)
                 rescatsVol += managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
-                System.out.println("rescats vol: " + rescatsVol);
+                //System.out.println("rescats vol: " + rescatsVol);
 
             /**s'ha de mantenir la restricció d'un màxim de 15 persones per helicòpter*/
             if (rescatsVol + managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
-                System.out.println("entrem al segon if");
 
+                double oldPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
+                double oldPath2Distance = getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
+                double newPath1Distance, newPath2Distance;
                 Grupo grup_mogut = managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
                 managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
@@ -646,8 +631,16 @@ public class State {
                 managedCentres.get(centre2).get(vol2).capacity += grup_mogut.getNPersonas();
 
                 /**eliminem el vol en cas de que quedi vuit*/
-                if (managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
+                if (managedCentres.get(centre1).get(vol1).toRescue.size() == 0) {
                     managedCentres.get(centre1).remove(vol1);
+                    extraRescueTime1 -= 10; extraRescueTime2 -= 10;
+                    newPath1Distance = 0.0;
+                }
+                else newPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
+                newPath2Distance = getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
+
+                distance -= oldPath1Distance - newPath1Distance;
+                distance += newPath2Distance - oldPath2Distance;
             }
         }
     }
@@ -660,14 +653,20 @@ public class State {
         if (0 <= vol1 && vol1 < managedCentres.get(centre1).size() &&
                 0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size()) {
 
+            double oldPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
+            double newPath1Distance, newPath2Distance;
             Grupo grup_mogut = managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
 
             managedCentres.get(centre1).get(vol1).capacity -= grup_mogut.getNPersonas();
             managedCentres.get(centre1).get(vol1).toRescue.remove(pos1);
 
             /**eliminem el vol en cas de que quedi vuit*/
-            if (managedCentres.get(centre1).get(vol1).toRescue.size() == 0)
+            if (managedCentres.get(centre1).get(vol1).toRescue.size() == 0) {
                 managedCentres.get(centre1).remove(vol1);
+                extraRescueTime1 -= 10; extraRescueTime2 -= 10;
+                newPath1Distance = 0;
+            }
+            else newPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
 
             /**Creem nou Path i l'afegim al centre2*/
             State.Path nou = new State.Path();
@@ -675,6 +674,45 @@ public class State {
             nou.toRescue.add(grup_mogut);
             nou.capacity = grup_mogut.getNPersonas();
             managedCentres.get(centre2).add(nou);
+            newPath2Distance = getPathDistance(nou,C.get(centre2));
+
+            distance -= oldPath1Distance - newPath1Distance;
+            distance += newPath2Distance;
+        }
+    }
+
+    public double getPathDistance(Path p, Centro c) {
+        switch (p.toRescue.size()) {
+            case 0: {
+                return 0.0;
+            }
+            case 1: {
+                return 2 * distance(p.toRescue.get(0).getCoordX(),p.toRescue.get(0).getCoordY(),
+                        c.getCoordX(),c.getCoordY());
+            }
+            case 2: {
+                return distance(p.toRescue.get(0).getCoordX(),p.toRescue.get(0).getCoordY(),
+                            c.getCoordX(),c.getCoordY())
+                        +
+                        distance(p.toRescue.get(0).getCoordX(),p.toRescue.get(0).getCoordY(),
+                            p.toRescue.get(1).getCoordX(),p.toRescue.get(1).getCoordY())
+                        +
+                        distance(p.toRescue.get(1).getCoordX(),p.toRescue.get(1).getCoordY(),
+                            c.getCoordX(),c.getCoordY());
+            }
+            default: {
+                return distance(p.toRescue.get(0).getCoordX(),p.toRescue.get(0).getCoordY(),
+                            c.getCoordX(),c.getCoordY())
+                        +
+                        distance(p.toRescue.get(0).getCoordX(),p.toRescue.get(0).getCoordY(),
+                            p.toRescue.get(1).getCoordX(),p.toRescue.get(1).getCoordY())
+                        +
+                        distance(p.toRescue.get(1).getCoordX(),p.toRescue.get(1).getCoordY(),
+                                p.toRescue.get(2).getCoordX(),p.toRescue.get(2).getCoordY())
+                        +
+                        distance(p.toRescue.get(2).getCoordX(),p.toRescue.get(2).getCoordY(),
+                            c.getCoordX(),c.getCoordY());
+            }
         }
     }
 }

@@ -7,19 +7,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../AIMA/AIMA.jar!/" />
+          <root url="jar://$USER_HOME$/Desastres/Desastres.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../Desastres/Desastres.jar!/" />
+          <root url="jar://$USER_HOME$/AIMA/dist/AIMA.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

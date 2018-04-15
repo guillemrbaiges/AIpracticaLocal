@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Heuristic2 implements HeuristicFunction {
 
     public double getHeuristicValue(Object S) {
-        return ((State)(S)).getDistance()*(60.0 / 100.0) + ((State)(S)).getExtraRescueTime2();
+        return ((State)S).getDistance()*(60.0 / 100.0) + ((State)S).getExtraRescueTime2();
     }
 
     public static void printFirstSolution(State s) {
@@ -52,41 +52,6 @@ public class Heuristic2 implements HeuristicFunction {
 
         retValue = super.equals(obj);
         return retValue;
-    }
-    
-    public int evaluateManhattanDistanceOf(int i, XYLocation loc) {
-        int retVal = -1;
-        int xpos = loc.getXCoOrdinate();
-        int ypos = loc.getYCoOrdinate();
-        switch (i) {
-
-            case 1:
-                retVal = Math.abs(xpos - 0) + Math.abs(ypos - 1);
-                break;
-            case 2:
-                retVal = Math.abs(xpos - 0) + Math.abs(ypos - 2);
-                break;
-            case 3:
-                retVal = Math.abs(xpos - 1) + Math.abs(ypos - 0);
-                break;
-            case 4:
-                retVal = Math.abs(xpos - 1) + Math.abs(ypos - 1);
-                break;
-            case 5:
-                retVal = Math.abs(xpos - 1) + Math.abs(ypos - 2);
-                break;
-            case 6:
-                retVal = Math.abs(xpos - 2) + Math.abs(ypos - 0);
-                break;
-            case 7:
-                retVal = Math.abs(xpos - 2) + Math.abs(ypos - 1);
-                break;
-            case 8:
-                retVal = Math.abs(xpos - 2) + Math.abs(ypos - 2);
-                break;
-
-        }
-        return retVal;
     }
 
 }

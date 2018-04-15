@@ -1,16 +1,12 @@
 package com.company;
 
-import IA.Desastres.Centro;
-import IA.Desastres.Centros;
-import IA.Desastres.Grupo;
+import IA.Desastres.*;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
-import aima.search.framework.Successor;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -55,7 +51,7 @@ public class Main {
     private static void HillClimbingSearch(State state) {
         System.out.println("\nHill Climbing Search -->");
         try {
-            Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic());
+            Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic1());
             Search search = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem, search);
 
@@ -69,7 +65,7 @@ public class Main {
     private static void SimulatedAnnealingSearch(State state) {
         System.out.println("\nSimulated Annealing Search -->");
         try {
-            Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic());
+            Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic1());
             Search search = new SimulatedAnnealingSearch();                         //TODO: add parametres to the search function
             SearchAgent agent = new SearchAgent(problem, search);
 
