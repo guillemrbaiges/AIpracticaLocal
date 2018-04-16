@@ -90,6 +90,7 @@ public class State implements Cloneable {
         G = new Grupos(nGrupos, seed);
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
+        managedCentres = genFirstSolutionEficient();
     }
 
     /** For generating a copy of a State!! */
@@ -495,9 +496,9 @@ public class State implements Cloneable {
                 distance -= oldPath2Distance - getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
 
                 /**actualitzem valors de capacitat*/
-                /**managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
+                managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
                 managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
-                for (int i = 0; i < managedCentres.size(); i++) {
+                /*for (int i = 0; i < managedCentres.size(); i++) {
                     System.out.println("centre " + i);
                     for (int j = 0; j < managedCentres.get(i).size(); j++) {
                         System.out.println("    vol " + j);
@@ -545,7 +546,10 @@ public class State implements Cloneable {
                     extraRescueTime1 -= 10; extraRescueTime2 -= 10;
                     newPath1Distance = 0.0;
                 }
-                else newPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
+                else {
+                    newPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
+                }
+                System.out.println("centre: " + centre2 + "vol " + vol2);
                 newPath2Distance = getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
 
                 distance -= oldPath1Distance - newPath1Distance;
@@ -591,6 +595,7 @@ public class State implements Cloneable {
     }
 
     public double getPathDistance(Path p, Centro c) {
+        /*
         switch (p.toRescue.size()) {
             case 0: {
                 return 0.0;
@@ -623,5 +628,7 @@ public class State implements Cloneable {
                             c.getCoordX(),c.getCoordY());
             }
         }
+        */
+        return 4;
     }
 }

@@ -25,16 +25,16 @@ public class Operators  implements SuccessorFunction {
                         for (int j2 = 0; j2 < state.managedCentres.get(i2).size(); j2++) { /**recorrem tots els vols de cada centre*/
                             for (int k2 = 0; k2 < state.managedCentres.get(i2).get(j2).toRescue.size(); k2++) { /**recorrem l'Array toRescue de cada vol (Path)*/
 
-                            /**comprovem que no és el mateix element i fem el swap*/
-                            if (i1!=i2 || j1!=j2 || k1!=k2) {
-                                State aux = null;
-                                /**try {
-                                    aux = state.clone();
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }*/
-                                aux = state.getCopy();
-                                aux.swap(i1, j1, k1, i2, j2, k2);
+                                /**comprovem que no és el mateix element i fem el swap*/
+                                if (i1!=i2 || j1!=j2 || k1!=k2) {
+                                    State aux = null;
+                                    /**try {
+                                     aux = state.clone();
+                                     } catch (CloneNotSupportedException e) {
+                                     e.printStackTrace();
+                                     }*/
+                                    aux = state.getCopy();
+                                    aux.swap(i1, j1, k1, i2, j2, k2);
                                     retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, aux));
                                 }
                             }
@@ -64,7 +64,8 @@ public class Operators  implements SuccessorFunction {
                                for (int k2 = 0; k2 < state.managedCentres.get(i2).get(j2).toRescue.size(); k2++) {
 
                                     State aux2 = state.getCopy();
-                                    aux2.move(i1, j1, k1, i2, j2, k2);
+
+                                   aux2.move(i1, j1, k1, i2, j2, k2);
                                     retval.add(new Successor("Move between centre " + i1 + " i centre" + i2, aux2));
                                }
                            }
@@ -73,6 +74,7 @@ public class Operators  implements SuccessorFunction {
 
             }
         }
+        System.out.println("mida retval: " + retval.size());
 
         return retval;
     }

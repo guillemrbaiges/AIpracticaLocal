@@ -14,8 +14,10 @@ import java.util.Properties;
 public class Main {
 
     public static void main(String[] args) {
-        State test = new State(3, 3, 3);
+        State test = new State(10, 4, 3);
+        test.printFirstSolution();
         HillClimbingSearch(test);
+
     }
 
     public static void printFirstSolution(State s) {
@@ -56,7 +58,8 @@ public class Main {
             SearchAgent agent = new SearchAgent(problem, search);
 
             //printActions(agent.getActions());
-            //printInstrumentation(agent.getInstrumentation());
+            printInstrumentation(agent.getInstrumentation());
+            System.out.println("Fi hill climbing");
         } catch (Exception e) {
             e.printStackTrace();
         }
