@@ -59,7 +59,7 @@ public class State implements Cloneable {
 
     static class Path
     {
-        public Integer pathID;
+        public int pathID;
         public ArrayList<Grupo> toRescue = new ArrayList<>();
         public Integer capacity = 15;
 
@@ -90,6 +90,14 @@ public class State implements Cloneable {
         G = new Grupos(nGrupos, seed);
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
+        managedCentres = genFirstSolutionDummy();
+
+        printFirstSolution();
+        System.out.println();
+        System.out.println("Initial state total distance");
+        System.out.println(distance);
+        System.out.println(extraRescueTime1);
+
     }
 
     /** For generating a copy of a State!! */
@@ -128,13 +136,13 @@ public class State implements Cloneable {
             scene[c.getCoordY()][c.getCoordX()] = "c" + String.valueOf(i);
         }
 
-
         for (int i = 0; i < managedCentres.size(); ++i)
             for (int j = 0; j < managedCentres.get(i).size(); ++j) {
                 Path p = managedCentres.get(i).get(j);
+                int groupId = 0;
                 for (int l = 0; l < p.toRescue.size(); ++l) {
                     Grupo g = p.toRescue.get(l);
-                    scene[g.getCoordY()][g.getCoordX()] = String.valueOf(i);
+                    scene[g.getCoordY()][g.getCoordX()] = String.valueOf(i)+groupId++;
                 }
             }
 
@@ -164,7 +172,6 @@ public class State implements Cloneable {
                 group1Index = i; group2Index = -1; group3Index = -1;
                 rescuedG[i] = true;
                 Path p = new Path();
-                p.pathID = pathId;
                 ++pathId;
                 p.toRescue.add(G.get(i));
                 p.capacity -= G.get(i).getNPersonas();
@@ -222,7 +229,6 @@ public class State implements Cloneable {
 
         int group1Index, group2Index, group3Index;
         Path p;
-        int pathId = 0;
         Integer rescGroups = 0;
         while (rescGroups < G.size()) {
             for (int i = 0; i < G.size(); ++i) {
@@ -230,8 +236,6 @@ public class State implements Cloneable {
                     rescuedG[i] = true;
 
                     p = new Path();
-                    p.pathID = pathId;
-                    ++pathId;
                     p.toRescue.add(G.get(i));
                     rescGroups++;
                     p.capacity -= G.get(i).getNPersonas();
@@ -289,6 +293,7 @@ public class State implements Cloneable {
                 printGroup(centres.get(i).get(j));
             }
         }*/
+        System.out.println("Initial state total distance");
         System.out.println("Distance: " + distance);
         System.out.println("extra1: " + extraRescueTime1);
         System.out.println("extra2: " + extraRescueTime2);
@@ -495,9 +500,9 @@ public class State implements Cloneable {
                 distance -= oldPath2Distance - getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
 
                 /**actualitzem valors de capacitat*/
-                /**managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
+                managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
                 managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
-                for (int i = 0; i < managedCentres.size(); i++) {
+                /**for (int i = 0; i < managedCentres.size(); i++) {
                     System.out.println("centre " + i);
                     for (int j = 0; j < managedCentres.get(i).size(); j++) {
                         System.out.println("    vol " + j);
@@ -609,7 +614,7 @@ public class State implements Cloneable {
                         distance(p.toRescue.get(1).getCoordX(),p.toRescue.get(1).getCoordY(),
                             c.getCoordX(),c.getCoordY());
             }
-            default: {
+            case 3: {
                 return distance(p.toRescue.get(0).getCoordX(),p.toRescue.get(0).getCoordY(),
                             c.getCoordX(),c.getCoordY())
                         +
@@ -622,6 +627,8 @@ public class State implements Cloneable {
                         distance(p.toRescue.get(2).getCoordX(),p.toRescue.get(2).getCoordY(),
                             c.getCoordX(),c.getCoordY());
             }
+            default:
+                return 0.0;
         }
     }
 }

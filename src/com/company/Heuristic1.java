@@ -14,9 +14,13 @@ import java.util.ArrayList;
 public class Heuristic1 implements HeuristicFunction {
 
     public double getHeuristicValue(Object S) {
-        /**System.out.println(((State)S).getDistance());
+
+        /**System.out.println();
+        printFirstSolution((State)S);
+        System.out.println(((State)S).getDistance());
         System.out.println(((State)S).getExtraRescueTime1());
         System.out.println();*/
+
         return ((State)S).getDistance()*(60.0 / 100.0) + ((State)S).getExtraRescueTime1();
     }
 

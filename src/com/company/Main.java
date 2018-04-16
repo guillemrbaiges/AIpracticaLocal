@@ -4,6 +4,7 @@ import IA.Desastres.*;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
+import aima.search.framework.Successor;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
@@ -14,7 +15,7 @@ import java.util.Properties;
 public class Main {
 
     public static void main(String[] args) {
-        State test = new State(3, 3, 3);
+        State test = new State(10, 10, 3);
         HillClimbingSearch(test);
     }
 
@@ -55,8 +56,11 @@ public class Main {
             Search search = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem, search);
 
-            //printActions(agent.getActions());
-            //printInstrumentation(agent.getInstrumentation());
+            System.out.println("Goal state total distance");
+            System.out.println(((State)search.getGoalState()).getDistance());
+            System.out.println(((State)search.getGoalState()).getExtraRescueTime1());
+            printActions(agent.getActions());
+            printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
             e.printStackTrace();
         }
