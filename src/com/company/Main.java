@@ -11,13 +11,32 @@ import aima.search.informed.SimulatedAnnealingSearch;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        State test = new State(10, 10, 3);
-        HillClimbingSearch(test);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter number of GROUPS");
+        String in = sc.nextLine();
+        int ng = Integer.parseInt(in);
 
+        System.out.println("Please enter number of CENTRES");
+        in = sc.nextLine();
+        int nc = Integer.parseInt(in);
+
+        System.out.println("Please enter SEED");
+        in = sc.nextLine();
+        int s = Integer.parseInt(in);
+
+        System.out.println("Which algorithm should be used ?\n" +
+                "Enter '1' to use Hill-Climbing\n" +
+                "Enter '2' to use Simulated Anealing\n");
+        in = sc.nextLine();
+        int op = Integer.parseInt(in);
+        State S = new State(ng, nc, s);
+        if (op == 1) HillClimbingSearch(S);
+        if (op == 2) SimulatedAnnealingSearch(S);
     }
 
     public static void printFirstSolution(State s) {
@@ -51,32 +70,42 @@ public class Main {
     }
 
     private static void HillClimbingSearch(State state) {
-        System.out.println("\nHill Climbing Search -->");
+        System.out.println("\nHill Climbing Search -->\n");
         try {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic1());
             Search search = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem, search);
 
-            System.out.println("Goal state total distance");
-            System.out.println(((State)search.getGoalState()).getDistance());
-            System.out.println(((State)search.getGoalState()).getExtraRescueTime1());
-            printActions(agent.getActions());
-            printInstrumentation(agent.getInstrumentation());
+            State S = (State) search.getGoalState();
+            System.out.println("Goal state total time: " + S.getDistance()*(60.0 / 100.0) + S.getExtraRescueTime1() + "\n");
+            System.out.println("Would you like to print all the Actions and Instrumentation? (yes or no)");
+            Scanner sc = new Scanner(System.in);
+            String in = sc.nextLine();
+            if (in.equals("yes")) {
+                printActions(agent.getActions());
+                printInstrumentation(agent.getInstrumentation());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private static void SimulatedAnnealingSearch(State state) {
-        System.out.println("\nSimulated Annealing Search -->");
+        System.out.println("\nSimulated Annealing Search -->\n");
         try {
-            Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic1());
+            Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic2());
             Search search = new SimulatedAnnealingSearch();                         //TODO: add parametres to the search function
             SearchAgent agent = new SearchAgent(problem, search);
 
-            System.out.println();
-            printActions(agent.getActions());
-            //printInstrumentation(agent.getInstrumentation());
+            State S = (State) search.getGoalState();
+            System.out.println("Goal state total time: " + S.getDistance()*(60.0 / 100.0) + S.getExtraRescueTime2() + "\n");
+            System.out.println("Would you like to print all the Actions and Instrumentation? (yes or no)");
+            Scanner sc = new Scanner(System.in);
+            String in = sc.nextLine();
+            if (in.equals("yes")) {
+                printActions(agent.getActions());
+                printInstrumentation(agent.getInstrumentation());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +121,7 @@ public class Main {
     }
 
     private static void printActions(List actions) {
-        System.out.println("#Accions" + actions.size());
+        System.out.println("#Accions: " + actions.size() + "\n");
         for (int i = 0; i < actions.size(); i++) {
             String action = (String) actions.get(i);
             System.out.println(action);

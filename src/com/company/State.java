@@ -94,10 +94,8 @@ public class State implements Cloneable {
 
         printFirstSolution();
         System.out.println();
-        System.out.println("Initial state total distance");
-        System.out.println(distance);
-        System.out.println(extraRescueTime1);
-
+        System.out.println("Initial state total time without priorities: " + distance*(60.0 / 100.0) + extraRescueTime1 + "\n");
+        System.out.println("Initial state total time with priorities: " + distance*(60.0 / 100.0) + extraRescueTime2 + "\n");
     }
 
     /** For generating a copy of a State!! */
@@ -593,11 +591,11 @@ public class State implements Cloneable {
             managedCentres.get(centre2).add(nou);
             newPath2Distance = getPathDistance(nou,C.get(centre2));
 
-            distance -= oldPath1Distance - newPath1Distance;
+            distance = distance - oldPath1Distance + newPath1Distance;
             distance += newPath2Distance;
             extraRescueTime1 += 10;
             extraRescueTime2 += 10;
-            System.out.println("move nou fet, distancia nova és: " +  distance);
+            //System.out.println("move nou fet, distancia nova és: " +  distance);
 
         }
     }
