@@ -17,6 +17,7 @@ public class Main {
     public static void main(String[] args) {
         State test = new State(10, 10, 3);
         HillClimbingSearch(test);
+
     }
 
     public static void printFirstSolution(State s) {

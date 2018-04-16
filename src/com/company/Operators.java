@@ -48,6 +48,7 @@ public class Operators  implements SuccessorFunction {
                                 System.out.println(aux.getDistance());
                                 System.out.println(aux.getExtraRescueTime1());
                                 System.out.println();*/
+
                                     retval.add(new Successor("Swap between centre " + i1 + " i centre" + i2, aux));
                                 }
                             }
