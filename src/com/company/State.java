@@ -7,7 +7,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class State {
+public class State implements Cloneable {
 
     public static int NUM_COPTERS = 2;
 
@@ -17,6 +17,11 @@ public class State {
     private Double[][] groupsAdjM;
     private Double[][] centresAdjM;
     private Double distance, extraRescueTime1, extraRescueTime2; // 1 -> Sense prioritats; 2 -> Amb prioritats
+
+    @Override
+    public State clone() throws CloneNotSupportedException {
+        return (State) super.clone();
+    }
 
     public Double getDistance() {
         return distance;
@@ -80,35 +85,22 @@ public class State {
 
     public State() {};
 
-    public State( ArrayList<ArrayList<Path> > mngcentres, Grupos inG, Centros inC, Double[][] cAdjM, Double[][] gAdjM) {
-        distance = extraRescueTime1 = extraRescueTime2 = 0.0;
-        G = inG; C = inC;
-        centresAdjM = cAdjM;
-        groupsAdjM = gAdjM;
-        managedCentres = mngcentres;
-    }
-
     public State(int nGrupos, int nCentros, int seed) {
         distance = extraRescueTime1 = extraRescueTime2 = 0.0;
         G = new Grupos(nGrupos, seed);
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
+    }
 
-        Path p = new Path();
-        p.toRescue.add(G.get(0));
-        managedCentres = new ArrayList<>();
-        ArrayList<Path> test = new ArrayList<>();
-        test.add(p);
-        managedCentres.add(test);
-        managedCentres = genFirstSolutionEficient();
-
-        /*for (int i = 0; i < managedCentres.size(); i++) {
-            System.out.println("centre " + i);
-            for (int j = 0; j < managedCentres.get(i).size(); j++) {
-                System.out.println("    vol " + j);
-                printGroup(managedCentres.get(i).get(j));
-            }
-        }*/
+    /** For generating a copy of a State!! */
+    public State( ArrayList<ArrayList<Path> > mngcentres, Grupos inG, Centros inC, Double[][] cAdjM, Double[][] gAdjM, Double dist, Double r1, Double r2) {
+        G = inG; C = inC;
+        centresAdjM = cAdjM;
+        groupsAdjM = gAdjM;
+        managedCentres = mngcentres;
+        distance = 0 + dist;
+        extraRescueTime1 = 0 + r1;
+        extraRescueTime2 = 0 + r2;
     }
 
     public State getCopy() {
@@ -121,7 +113,7 @@ public class State {
             }
         }
 
-        return new State(copy, G, C, centresAdjM, groupsAdjM);
+        return new State(copy, G, C, centresAdjM, groupsAdjM, distance, extraRescueTime1, extraRescueTime2);
     }
 
     public void printFirstSolution() {
@@ -266,7 +258,7 @@ public class State {
                     int inCharge = closerCentre(p, C);
                     centres.get(inCharge).add(p);
 
-                    /* calculate the total distance of the path (distance), and the added time
+                    /** calculate the total distance of the path (distance), and the added time
                     (a part from the one associated to distance): */
                     distance += centresAdjM[inCharge][i];
                     extraRescueTime1 += G.get(i).getNPersonas()*1.0;
@@ -297,6 +289,9 @@ public class State {
                 printGroup(centres.get(i).get(j));
             }
         }*/
+        System.out.println("Distance: " + distance);
+        System.out.println("extra1: " + extraRescueTime1);
+        System.out.println("extra2: " + extraRescueTime2);
 
         return centres;
     }
@@ -500,7 +495,7 @@ public class State {
                 distance -= oldPath2Distance - getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
 
                 /**actualitzem valors de capacitat*/
-                managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
+                /**managedCentres.get(centre1).get(vol1).capacity = rescatsVol1;
                 managedCentres.get(centre2).get(vol2).capacity = rescatsVol2;
                 for (int i = 0; i < managedCentres.size(); i++) {
                     System.out.println("centre " + i);
@@ -508,7 +503,7 @@ public class State {
                         System.out.println("    vol " + j);
                         printGroup(managedCentres.get(i).get(j));
                     }
-                }
+                }*/
 
             }
         }

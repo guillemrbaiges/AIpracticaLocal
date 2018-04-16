@@ -14,7 +14,13 @@ public class Operators_SA implements SuccessorFunction {
      */
     public List getSuccessors(Object S) {
         State a = (State) S;
-        State st = a.getCopy();
+        State st = null;
+        /**try {
+            st = a.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }*/
+        st = a.getCopy();
         ArrayList retval = new ArrayList();
 
         Random generator = new Random();
