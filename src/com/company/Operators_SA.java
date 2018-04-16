@@ -87,7 +87,7 @@ public class Operators_SA implements SuccessorFunction {
                 }
             }
         }
-
+        System.out.println("retval size: " + retval.size());
         return retval;
     }
 }

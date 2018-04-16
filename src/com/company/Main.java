@@ -70,7 +70,7 @@ public class Main {
     }
 
     private static void HillClimbingSearch(State state) {
-        System.out.println("\nHill Climbing Search -->\n");
+        System.out.println("Hill Climbing Search -->\n");
         try {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic1());
             Search search = new HillClimbingSearch();
@@ -91,7 +91,7 @@ public class Main {
     }
 
     private static void SimulatedAnnealingSearch(State state) {
-        System.out.println("\nSimulated Annealing Search -->\n");
+        System.out.println("Simulated Annealing Search -->\n");
         try {
             Problem problem = new Problem(state, new Operators(), new Goal(), new Heuristic2());
             Search search = new SimulatedAnnealingSearch();                         //TODO: add parametres to the search function
@@ -99,13 +99,7 @@ public class Main {
 
             State S = (State) search.getGoalState();
             System.out.println("Goal state total time: " + S.getDistance()*(60.0 / 100.0) + S.getExtraRescueTime2() + "\n");
-            System.out.println("Would you like to print all the Actions and Instrumentation? (yes or no)");
-            Scanner sc = new Scanner(System.in);
-            String in = sc.nextLine();
-            if (in.equals("yes")) {
-                printActions(agent.getActions());
-                printInstrumentation(agent.getInstrumentation());
-            }
+            printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
             e.printStackTrace();
         }
