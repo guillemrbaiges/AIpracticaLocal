@@ -567,7 +567,8 @@ public class State implements Cloneable {
      */
     public void move_nou (int centre1, int vol1, int pos1, int centre2) {
         if (0 <= vol1 && vol1 < managedCentres.get(centre1).size() &&
-                0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size()) {
+                0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size() &&
+                (managedCentres.get(centre1).get(vol1).toRescue.size() > 1 || centre1 != centre2)) {
 
             double oldPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
             double newPath1Distance, newPath2Distance;
@@ -594,6 +595,10 @@ public class State implements Cloneable {
 
             distance -= oldPath1Distance - newPath1Distance;
             distance += newPath2Distance;
+            extraRescueTime1 += 10;
+            extraRescueTime2 += 10;
+            System.out.println("move nou fet, distancia nova és: " +  distance);
+
         }
     }
 
