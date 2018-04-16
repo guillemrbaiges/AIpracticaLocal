@@ -90,6 +90,7 @@ public class State implements Cloneable {
         G = new Grupos(nGrupos, seed);
         C = new Centros(nCentros, NUM_COPTERS, seed);
         setBoard();
+        managedCentres = genFirstSolutionDummy();
 
         printFirstSolution();
         System.out.println();
