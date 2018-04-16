@@ -60,21 +60,21 @@ public class Operators  implements SuccessorFunction {
 
                            for (int j2 = 0; j2 < state.managedCentres.get(i2).size(); j2++) { /**recorrem tots els vols de cada centre*/
 
+
                                /**si el vol té menys de 3 centre fem un move a cada una de les possibles posicions */
                                for (int k2 = 0; k2 < state.managedCentres.get(i2).get(j2).toRescue.size(); k2++) {
-
-                                    State aux2 = state.getCopy();
-
+                                   State aux2 = state.getCopy();
                                    aux2.move(i1, j1, k1, i2, j2, k2);
-                                    retval.add(new Successor("Move between centre " + i1 + " i centre" + i2, aux2));
+                                   retval.add(new Successor("Move between centre " + i1 + " i centre" + i2, aux2));
                                }
+
                            }
                        }
                     }
 
             }
         }
-        System.out.println("mida retval: " + retval.size());
+        System.out.println("mida retval: " + retval.size() + "\n\n");
 
         return retval;
     }

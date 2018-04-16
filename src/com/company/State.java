@@ -481,6 +481,7 @@ public class State implements Cloneable {
 
             /**comprovem que en fer el swap mantenim la restriccióde màxim 15 persones per helicòpter*/
             if (rescatsVol1 <= 15 && rescatsVol2 <= 15) {
+
                 Grupo temp1 = (Grupo) managedCentres.get(centre1).get(vol1).toRescue.get(pos1);
                 Grupo temp2 = (Grupo) managedCentres.get(centre2).get(vol2).toRescue.get(pos2);
                 Path p1 = managedCentres.get(centre1).get(vol1);
@@ -519,7 +520,9 @@ public class State implements Cloneable {
         if (0 <= vol1 && vol1 < managedCentres.get(centre1).size() &&
                 0 <= pos1 && pos1 < managedCentres.get(centre1).get(vol1).toRescue.size() &&
                 0 <= vol2 && vol2 < managedCentres.get(centre2).size() &&
-                0 <= pos2 && pos2 < managedCentres.get(centre2).get(vol2).toRescue.size()) {
+                0 <= pos2 && pos2 < managedCentres.get(centre2).get(vol2).toRescue.size() &&
+                (centre1 != centre2 || vol1 != vol2) &&
+                managedCentres.get(centre2).get(vol2).toRescue.size() < 3) {
             int rescatsVol = 0;
             for (int i = 0; i < managedCentres.get(centre2).get(vol2).toRescue.size(); i++)
                 rescatsVol += managedCentres.get(centre2).get(vol2).toRescue.get(i).getNPersonas();
@@ -527,6 +530,10 @@ public class State implements Cloneable {
 
             /**s'ha de mantenir la restricció d'un màxim de 15 persones per helicòpter*/
             if (rescatsVol + managedCentres.get(centre1).get(vol1).toRescue.get(pos1).getNPersonas() <= 15) {
+
+                //System.out.println("move, centre1: " + centre1 + " vol1: " +vol1 + " pos1: " + pos1);
+                //System.out.println("move, centre2: " + centre2 + " vol2: " +vol2 + " pos2: " + pos2);
+                //System.out.println("size del centre 2: " + managedCentres.get(centre2).size());
 
                 double oldPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
                 double oldPath2Distance = getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
@@ -545,11 +552,10 @@ public class State implements Cloneable {
                     managedCentres.get(centre1).remove(vol1);
                     extraRescueTime1 -= 10; extraRescueTime2 -= 10;
                     newPath1Distance = 0.0;
+                    if (centre1 == centre2 && vol1 < vol2) vol2--;
                 }
-                else {
-                    newPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
-                }
-                System.out.println("centre: " + centre2 + "vol " + vol2);
+                else newPath1Distance = getPathDistance(managedCentres.get(centre1).get(vol1),C.get(centre1));
+
                 newPath2Distance = getPathDistance(managedCentres.get(centre2).get(vol2),C.get(centre2));
 
                 distance -= oldPath1Distance - newPath1Distance;
@@ -595,7 +601,8 @@ public class State implements Cloneable {
     }
 
     public double getPathDistance(Path p, Centro c) {
-        /*
+
+        //System.out.println("size del path: " + p.toRescue.size());
         switch (p.toRescue.size()) {
             case 0: {
                 return 0.0;
@@ -628,7 +635,6 @@ public class State implements Cloneable {
                             c.getCoordX(),c.getCoordY());
             }
         }
-        */
-        return 4;
+
     }
 }

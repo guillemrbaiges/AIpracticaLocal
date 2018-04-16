@@ -15,6 +15,10 @@ public class Main {
 
     public static void main(String[] args) {
         State test = new State(10, 4, 3);
+        //System.out.println((test).getDistance()*(60.0 / 100.0) + (test).getExtraRescueTime1());
+        //test.move_nou(1, 0, 0, 2);
+        //System.out.println((test).getDistance()*(60.0 / 100.0) + (test).getExtraRescueTime1());
+
         test.printFirstSolution();
         HillClimbingSearch(test);
 
